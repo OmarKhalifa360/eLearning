@@ -16,22 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin # type: ignore
 from django.urls import path, include # type: ignore
-from rest_framework import routers # type: ignore
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView # type: ignore
-from elearning_app import views # type: ignore
-from elearning_app.views import RegisterView # type: ignore
-
-
-router = routers.DefaultRouter()
-router.register(r'courses', views.CourseViewSet)
-router.register(r'lessons', views.LessonViewSet)
-router.register(r'enrollments', views.EnrollmentViewSet)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/register/', RegisterView.as_view(), name='auth_register'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]
