@@ -8,9 +8,18 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
 import os
-import django # type: ignore
-from channels.routing import get_default_application # type: ignore
+import django
+from channels.auth import AuthMiddlewareStack
+from channels.routing import get_default_application
+import elearning_app.middleware import JWTAuthMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 django.setup()
-application = get_default_application()
+
+application = ProtocolTypeRouter({
+    'websocket': JWTAuthMiddleware(
+        URLRouter(
+            elearning_app.routing.websocket_urlpatterns
+        )
+    ),
+})
