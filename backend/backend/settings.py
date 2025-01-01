@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_rest_passwordreset',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -55,7 +56,17 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',  # Only needed if you have CSRF protection enabled
+]
+
 CORS_ALLOW_ALL_ORIGINS = True   # For development purposes only
+
+CORS_ALLOW_CREDENTIALS = True 
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -92,6 +103,27 @@ REST_FRAMEWORK = {
     ),
 }
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_COOKIE': 'access_token',  # Cookie name
+    'AUTH_COOKIE_SECURE': False,    # Set True in production
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # Adjust based on frontend/backend domains
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Use smtp backend in production
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@example.com'
+EMAIL_HOST_PASSWORD = 'your_email_password'
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -100,7 +132,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'elearning',
         'USER': 'e_admin',
-        'PASSWORD': '48U120',
+        # 'PASSWORD': '++++++', 
         'HOST': 'localhost',
         'PORT': '3306',
     }
